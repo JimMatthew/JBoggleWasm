@@ -32,7 +32,7 @@ class BoggleTrieSolver {
         set.forEach(::insert)
     }
 
-    private fun loadWordList(list: List<String>) {
+    fun loadWordList(list: List<String>) {
         list.forEach(::insert)
     }
 

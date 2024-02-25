@@ -20,6 +20,7 @@ class WordScoreHandler (
     fun loadDict(dict : List<String>){
         //wordSet = dict
         dict.forEach { wordSet.add(it) }
+        tsolver.loadWordList(dict)
     }
 
     private fun userWordsString(): String {

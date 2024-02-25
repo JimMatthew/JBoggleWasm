@@ -16,9 +16,7 @@ import bogglegame.WordScoreHandler
 import com.example.boggle24.ui.theme.Header
 import kotlinx.browser.window
 
-class StateManager(
-) {
-
+class StateManager() {
 
     private val boardMaker = BoggleBoard(
         gameOver = { gameOver(it) },
@@ -42,7 +40,6 @@ class StateManager(
     private var score = mutableIntStateOf(0)
     private var isHighScore = mutableStateOf(boardMaker.isHighScore())
 
-
     var isDictLoaded = mutableStateOf(false)
 
     val boggleWordHandler = WordScoreHandler(
@@ -55,7 +52,6 @@ class StateManager(
 
     @Composable
     fun StateManager() {
-
 
         if (!isDictLoaded.value) {
             loadDict(){
@@ -70,7 +66,6 @@ class StateManager(
                     modifier = Modifier.padding(1.dp).width((500).dp),
                     fontSize = 20.sp
                 )
-
             }
         }
 
@@ -97,8 +92,6 @@ class StateManager(
                 toggleHS = { boardMaker.useHighScoreBoards() },
                 cancel = { boardMaker.clearCurrentWord() }
             )
-
-
         } else {
             GameOverDisplay(
                 numWords = numWordsFound.intValue.toString(),
@@ -107,10 +100,6 @@ class StateManager(
                 wordsOnBoard = wordsOnBoard.value
             )
         }
-
-
-
-
     }
 
     private fun setTimeLeft(time: String) {
@@ -178,7 +167,6 @@ class StateManager(
         boardMaker.clearCurrentWord()
     }
 
-
     fun UpdateDict(dict: List<String>) {
         boggleWordHandler.loadDict(dict)
         isDictLoaded.value = true
@@ -188,36 +176,25 @@ class StateManager(
 
 private fun loadDict(up: (String) -> Unit) {
 
-
     val output = HashSet<String>()
 
     window.fetch("/enable1.txt",
     )
         .then { it ->
-
             if (it.ok) {
                 it.text().then {
-                    //var x = (it as dictlist).dict?.split("\\s+".toRegex())?.forEach { output.add(it) }
-                    var x = it
                     up(it.toString())
-
                     null
                 }
-
             } else {
                 output.add(it.statusText)
             }
-            //state.UpdateDict(output)
             null
         }
         .catch {
             output.add("error")
-
             null
         }
-    //up(output)
-    //state.UpdateDict(output)
-    //return output
 }
 
 external interface dictlist {
