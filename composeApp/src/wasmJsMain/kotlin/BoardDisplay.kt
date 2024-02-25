@@ -1,4 +1,4 @@
-
+import androidx.compose.foundation.Image
 
 
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -105,6 +106,10 @@ fun BoardDisplay(
                             contentAlignment = Alignment.Center
                         ) {
 
+                            Image(
+                                painter = painterResource("/blank.png"),
+                                contentDescription = null
+                            )
 
                             Text(
                                 text = board[index].uppercase(),

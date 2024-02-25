@@ -72,43 +72,42 @@ class StateManager(
                 )
 
             }
+        }
+
+        Header(
+            timeleft = timeLeft.value,
+            currentWord = current.value,
+            newGame = { startNewGame() }
+        )
+
+        if (!gameover.value) {
+            BoardDisplay(
+                board = board.value,
+                pressed = pressed.value
+            ) { index, type ->
+                boardMaker.letterPress(index, type)
+            }
+            Controls(
+                numWords = numWordsFound.intValue,
+                score = score.intValue,
+                wordsOnBoard = wordsOnBoard.value,
+                status = status.value,
+                isHS = isHighScore.value,
+                submit = { submitWord() },
+                toggleHS = { boardMaker.useHighScoreBoards() },
+                cancel = { boardMaker.clearCurrentWord() }
+            )
 
 
         } else {
-            Header(
-                timeleft = timeLeft.value,
-                currentWord = current.value,
-                newGame = { startNewGame() }
+            GameOverDisplay(
+                numWords = numWordsFound.intValue.toString(),
+                score = score.intValue,
+                foundWords = foundWords.value,
+                wordsOnBoard = wordsOnBoard.value
             )
-
-            if (!gameover.value) {
-                BoardDisplay(
-                    board = board.value,
-                    pressed = pressed.value
-                ) { index, type ->
-                    boardMaker.letterPress(index, type)
-                }
-                Controls(
-                    numWords = numWordsFound.intValue,
-                    score = score.intValue,
-                    wordsOnBoard = wordsOnBoard.value,
-                    status = status.value,
-                    isHS = isHighScore.value,
-                    submit = { submitWord() },
-                    toggleHS = { boardMaker.useHighScoreBoards() },
-                    cancel = { boardMaker.clearCurrentWord() }
-                )
-
-
-            } else {
-                GameOverDisplay(
-                    numWords = numWordsFound.intValue.toString(),
-                    score = score.intValue,
-                    foundWords = foundWords.value,
-                    wordsOnBoard = wordsOnBoard.value
-                )
-            }
         }
+
 
 
 
@@ -192,7 +191,7 @@ private fun loadDict(up: (String) -> Unit) {
 
     val output = HashSet<String>()
 
-    window.fetch("http://localhost:8080/enable1.txt",
+    window.fetch("/enable1.txt",
     )
         .then { it ->
 
