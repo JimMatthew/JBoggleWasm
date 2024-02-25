@@ -169,6 +169,7 @@ class StateManager() {
 
     fun UpdateDict(dict: List<String>) {
         boggleWordHandler.loadDict(dict)
+        boardMaker.loadDict(dict)
         isDictLoaded.value = true
     }
 }

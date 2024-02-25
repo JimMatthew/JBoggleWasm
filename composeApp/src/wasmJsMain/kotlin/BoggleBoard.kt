@@ -1,6 +1,7 @@
-
-
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -12,8 +13,9 @@ class BoggleBoard
     private val boardArray: (Array<String>) -> Unit,
     private val updateStatus: (String) -> Unit,
     private val isHighScoreMode: (Boolean) -> Unit,
-    private val updateTime: (String) -> Unit
-) {
+    private val updateTime: (String) -> Unit,
+
+    ) {
 
     private var currentWord = ""
     private val die = arrayOf(
@@ -22,10 +24,14 @@ class BoggleBoard
     )
 
     var board = Array(16) { "" }
+
     //private var highScoreHandler: BoggleWordHandler = BoggleWordHandler()
+    var dictSet = HashSet<String>()
+    private val tsolver = BoggleTrieSolver()
     private var SIZE = 4
     private var time = 0
     private var playTime = 100
+
     //private var timer: Timer? = null
     private var isGameOver = true
     private var isRandom = true
@@ -35,6 +41,10 @@ class BoggleBoard
     private val gameBoardList: MutableList<Array<String>> = ArrayList()
     private val gameBoardWordList: MutableList<List<String>> = ArrayList()
     var pressed = ArrayList<Int>()
+    val timerScope = CoroutineScope(Dispatchers.Default)
+    var isDictLoaded = false
+    val timerJob = null
+    var isplaying = false
 
     enum class InputType {
         TAP,
@@ -43,6 +53,7 @@ class BoggleBoard
 
     fun startNewGame() {
         //if (timer != null) timer!!.cancel()
+        isplaying = false
         isGameOver = false
         gameOver(false)
         board = if (isRandom) {
@@ -58,17 +69,34 @@ class BoggleBoard
         pressedDice(pressed)
         updateStatus("")
         boardArray(board)
+        isplaying = true
         startTimer()
+    }
+
+    fun loadDict(dict: List<String>) {
+        tsolver.loadWordList(dict)
+        //makeHighScoreBoards()
     }
 
     private fun startTimer() {
         time = playTime
         updateTime(time.toString())
+        val timerScope = CoroutineScope(Dispatchers.Default)
+        val timerJob = timerScope.launch {
+            var count = 0
+            while (isplaying && time > 0) {
+                delay(1000)
+               incrementTime()
+                //updateVariable(count)
+            }
 
+        }
+
+        //timerJob.cancel()
     }
 
     private fun timerStop() {
-
+        isplaying = false
     }
 
     fun incrementTime() {
@@ -78,7 +106,7 @@ class BoggleBoard
             isGameOver = true
             gameOver(true)
             updateStatus("")
-            timerStop()
+            isplaying= false
         }
     }
 
@@ -119,7 +147,20 @@ class BoggleBoard
     }
 
     private fun makeHighScoreBoards() {
+        if (false) {
 
+            isRunning = true
+            val size = gameBoardList.size + 10
+            while (gameBoardList.size < size) {
+                val b = rollDice(die)
+                val words = tsolver.solve(b)
+                if (words.size > genScore) {
+                    gameBoardList.add(b)
+                    gameBoardWordList.add(words)
+                }
+            }
+            isRunning = false
+        }
     }
 
     private fun setNewPosition(position: Int, type: InputType) {

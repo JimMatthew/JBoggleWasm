@@ -30,6 +30,7 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(projects.shared)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
         }
     }
 }
