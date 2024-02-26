@@ -37,7 +37,7 @@ fun Controls(
             onClick = {
                 submit()
             }) {
-            Text("Submit")
+            Text("Submit", color =Color.White )
         }
         Button(
             colors = ButtonDefaults.buttonColors(Color(0xFF3287d3)),
@@ -47,7 +47,7 @@ fun Controls(
             onClick = {
                 cancel()
             }) {
-            Text("Clear")
+            Text("Clear", color =Color.White )
         }
     }
     Column {
@@ -76,7 +76,7 @@ fun Controls(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Toggle(
-                text = "HS Board",
+                text = "High Score Mode \n(only boards with over 200 words)",
                 value = isHS,
                 onValueChanged = { toggleHS() })
         }

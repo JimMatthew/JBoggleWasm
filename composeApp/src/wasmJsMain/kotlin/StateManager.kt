@@ -1,5 +1,3 @@
-
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -39,22 +37,22 @@ class StateManager() {
     private var status = mutableStateOf("")
     private var score = mutableIntStateOf(0)
     private var isHighScore = mutableStateOf(boardMaker.isHighScore())
-
+    private var showBoardAfterGame = mutableStateOf(false)
     var isDictLoaded = mutableStateOf(false)
 
     val boggleWordHandler = WordScoreHandler(
-        updateStatus = {gameStatus(it)},
-        updateScore = {score(it)},
-        updateNumWordsFound = {NumWordsFound(it)},
-        updateWordsFound = {foundWords(it)},
-        allWordsOnBoard = {wordsOnBoard(it)}
+        updateStatus = { gameStatus(it) },
+        updateScore = { score(it) },
+        updateNumWordsFound = { NumWordsFound(it) },
+        updateWordsFound = { foundWords(it) },
+        allWordsOnBoard = { wordsOnBoard(it) }
     )
 
     @Composable
     fun StateManager() {
 
         if (!isDictLoaded.value) {
-            loadDict(){
+            loadDict() {
                 upd(it)
             }
             Row(
@@ -75,13 +73,17 @@ class StateManager() {
             newGame = { startNewGame() }
         )
 
-        if (!gameover.value) {
+        if (showBoardAfterGame.value || !gameover.value) {
             BoardDisplay(
                 board = board.value,
                 pressed = pressed.value
             ) { index, type ->
                 boardMaker.letterPress(index, type)
             }
+        }
+
+        if (!gameover.value) {
+
             Controls(
                 numWords = numWordsFound.intValue,
                 score = score.intValue,
@@ -97,9 +99,14 @@ class StateManager() {
                 numWords = numWordsFound.intValue.toString(),
                 score = score.intValue,
                 foundWords = foundWords.value,
-                wordsOnBoard = wordsOnBoard.value
+                wordsOnBoard = wordsOnBoard.value,
+                showBoard = { showBoard() }
             )
         }
+    }
+
+    fun showBoard() {
+        showBoardAfterGame.value = !showBoardAfterGame.value
     }
 
     private fun setTimeLeft(time: String) {
@@ -147,13 +154,12 @@ class StateManager() {
     }
 
     private fun startNewGame() {
-
         boardMaker.startNewGame()
         boggleWordHandler.clearUserWords()
         boggleWordHandler.setBoardLayout(board.value)
     }
 
-    fun upd(d: String){
+    fun upd(d: String) {
         //gameStatus(d)
         val words = d.trimIndent().split("\n")
         UpdateDict(words)
@@ -179,7 +185,8 @@ private fun loadDict(up: (String) -> Unit) {
 
     val output = HashSet<String>()
 
-    window.fetch("/enable1.txt",
+    window.fetch(
+        "/JoggleWasm/enable1.txt",
     )
         .then { it ->
             if (it.ok) {

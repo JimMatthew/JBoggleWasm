@@ -31,8 +31,6 @@ class BoggleBoard
     private var SIZE = 4
     private var time = 0
     private var playTime = 100
-
-    //private var timer: Timer? = null
     private var isGameOver = true
     private var isRandom = true
     private val genScore = 200
@@ -41,9 +39,7 @@ class BoggleBoard
     private val gameBoardList: MutableList<Array<String>> = ArrayList()
     private val gameBoardWordList: MutableList<List<String>> = ArrayList()
     var pressed = ArrayList<Int>()
-    val timerScope = CoroutineScope(Dispatchers.Default)
     var isDictLoaded = false
-    val timerJob = null
     var isplaying = false
 
     enum class InputType {
@@ -52,8 +48,6 @@ class BoggleBoard
     }
 
     fun startNewGame() {
-        //if (timer != null) timer!!.cancel()
-        isplaying = false
         isGameOver = false
         gameOver(false)
         board = if (isRandom) {
@@ -69,13 +63,19 @@ class BoggleBoard
         pressedDice(pressed)
         updateStatus("")
         boardArray(board)
-        isplaying = true
-        startTimer()
+
+        if (isplaying) {
+            time = playTime
+            updateTime(time.toString())
+        } else {
+            isplaying = true
+            startTimer()
+        }
     }
 
     fun loadDict(dict: List<String>) {
         tsolver.loadWordList(dict)
-        //makeHighScoreBoards()
+        // makeHighScoreBoards()
     }
 
     private fun startTimer() {
@@ -84,15 +84,11 @@ class BoggleBoard
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timerJob = timerScope.launch {
             var count = 0
-            while (isplaying && time > 0) {
+            while (isplaying) {
                 delay(1000)
-               incrementTime()
-                //updateVariable(count)
+                incrementTime()
             }
-
         }
-
-        //timerJob.cancel()
     }
 
     private fun timerStop() {
@@ -106,7 +102,7 @@ class BoggleBoard
             isGameOver = true
             gameOver(true)
             updateStatus("")
-            isplaying= false
+            isplaying = false
         }
     }
 
@@ -147,19 +143,22 @@ class BoggleBoard
     }
 
     private fun makeHighScoreBoards() {
-        if (false) {
+        if (!isRunning) {
 
-            isRunning = true
-            val size = gameBoardList.size + 10
-            while (gameBoardList.size < size) {
-                val b = rollDice(die)
-                val words = tsolver.solve(b)
-                if (words.size > genScore) {
-                    gameBoardList.add(b)
-                    gameBoardWordList.add(words)
+            val timerScope = CoroutineScope(Dispatchers.Unconfined)
+            val timerJob = timerScope.launch {
+                isRunning = true
+                val size = gameBoardList.size + 2
+                while (gameBoardList.size < size) {
+                    val b = rollDice(die)
+                    val words = tsolver.solve(b)
+                    if (words.size > genScore) {
+                        gameBoardList.add(b)
+                        gameBoardWordList.add(words)
+                    }
                 }
+                isRunning = false
             }
-            isRunning = false
         }
     }
 
@@ -193,6 +192,5 @@ class BoggleBoard
 
     init {
         pressed = ArrayList()
-        makeHighScoreBoards()
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,10 +33,10 @@ fun BoardDisplay(
     var yoff by remember { mutableDoubleStateOf(0.0) }
     var endDragIndex by remember { mutableIntStateOf(-1) }
 
-    val screenWidth = 600
+    val screenWidth = 500
     var boxsize = (screenWidth) / 4
-    var swp = 600
-
+    //var swp = 400
+    val swp = with(LocalDensity.current) { screenWidth.dp.toPx() }
     Column {
         for (i in 0..3) {
             Row {
@@ -47,7 +48,7 @@ fun BoardDisplay(
                         shape = RectangleShape,
                         modifier = Modifier
                             .size(boxsize.dp) // Adjust size as needed
-                            .padding(5.dp), // Adjust padding as needed
+                            .padding(3.dp), // Adjust padding as needed
                         colors = ButtonDefaults.buttonColors(Color.White),
                         contentPadding = PaddingValues(0.dp),
 
@@ -55,7 +56,7 @@ fun BoardDisplay(
                         Box(
                             modifier = Modifier
                                 .size(boxsize.dp)
-                                //.fillMaxSize()
+                                .fillMaxSize()
                                 .pointerInput(Unit) {
                                     detectTapGestures(
                                         onPress = {
@@ -113,7 +114,7 @@ fun BoardDisplay(
 
                             Text(
                                 text = board[index].uppercase(),
-                                color = if (pressed.contains(index)) Color.Red else Color.Black,
+                                color = if (pressed.contains(index)) Color(0xFFce6f1b) else Color.Black,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 36.sp
                             )
