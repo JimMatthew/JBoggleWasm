@@ -25,7 +25,6 @@ class BoggleBoard
     )
 
     var board = Array(16) { "" }
-    var dictSet = HashSet<String>()
     private val tsolver = BoggleTrieSolver()
     private var SIZE = 4
     private var time = 0
@@ -82,7 +81,6 @@ class BoggleBoard
         updateTime(time.toString())
         val timerScope = CoroutineScope(Dispatchers.Default)
         val timerJob = timerScope.launch {
-            var count = 0
             while (isplaying) {
                 delay(1000)
                 incrementTime()
@@ -155,7 +153,7 @@ class BoggleBoard
                 val size = gameBoardList.size + 10
                 while (gameBoardList.size < size) {
                     val b = rollDice(die)
-                    val words = tsolver.solve(b)
+                    val words = tsolver.solve(b).distinct()
                     if (words.size > genScore) {
                         gameBoardList.add(b)
                         gameBoardWordList.add(words)

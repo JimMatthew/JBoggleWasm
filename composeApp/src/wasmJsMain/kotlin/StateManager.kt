@@ -13,6 +13,9 @@ import androidx.compose.ui.unit.sp
 import bogglegame.WordScoreHandler
 import com.example.boggle24.ui.theme.Header
 import kotlinx.browser.window
+import views.BoardDisplay
+import views.Controls
+import views.GameOverDisplay
 
 class StateManager() {
 
@@ -184,7 +187,7 @@ class StateManager() {
 private fun loadDict(up: (String) -> Unit) {
 
     window.fetch(
-        "/JoggleWasm/enable1.txt",
+        "/enable1.txt",
     )
         .then { it ->
             if (it.ok) {

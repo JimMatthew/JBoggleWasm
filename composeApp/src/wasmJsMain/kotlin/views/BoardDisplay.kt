@@ -1,3 +1,6 @@
+package views
+
+import BoggleBoard
 import androidx.compose.foundation.Image
 
 

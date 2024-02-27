@@ -2,7 +2,6 @@ package bogglegame
 
 import BoggleTrieSolver
 
-
 class WordScoreHandler (
     var updateStatus: (String) -> Unit,
     var updateScore: (Int) -> Unit,
@@ -10,7 +9,6 @@ class WordScoreHandler (
     var updateWordsFound: (String) -> Unit,
     var allWordsOnBoard: (List<String>) -> Unit
 ){
-    //private val wordSet: HashSet<String> = HashSet()
     private var wordSet : MutableSet<String> = HashSet()
     private val userWordSet: MutableSet<String> = HashSet()
     private var wordsOnBoard: List<String> = ArrayList()
@@ -18,7 +16,6 @@ class WordScoreHandler (
     private var score = 0
 
     fun loadDict(dict : List<String>){
-        //wordSet = dict
         dict.forEach { wordSet.add(it) }
         tsolver.loadWordList(dict)
     }
@@ -28,7 +25,7 @@ class WordScoreHandler (
     }
 
     fun setBoardLayout(board: Array<String>) {
-        wordsOnBoard = tsolver.solve(board)
+        wordsOnBoard = tsolver.solve(board).distinct()
         allWordsOnBoard(wordsOnBoard)
     }
 
