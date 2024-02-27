@@ -14,6 +14,7 @@ class BoggleBoard
     private val updateStatus: (String) -> Unit,
     private val isHighScoreMode: (Boolean) -> Unit,
     private val updateTime: (String) -> Unit,
+    private val submitWord:() -> Unit
 
     ) {
 
@@ -24,8 +25,6 @@ class BoggleBoard
     )
 
     var board = Array(16) { "" }
-
-    //private var highScoreHandler: BoggleWordHandler = BoggleWordHandler()
     var dictSet = HashSet<String>()
     private val tsolver = BoggleTrieSolver()
     private var SIZE = 4
@@ -75,7 +74,7 @@ class BoggleBoard
 
     fun loadDict(dict: List<String>) {
         tsolver.loadWordList(dict)
-        // makeHighScoreBoards()
+        makeHighScoreBoards()
     }
 
     private fun startTimer() {
@@ -126,6 +125,11 @@ class BoggleBoard
         if (button < 0 || button >= SIZE * SIZE) return
         if (isGameOver) return
         if (pressed.contains(button)) {
+            val s = pressed.indexOf(button)
+            if (s == pressed.size-1 && pressed.size > 2){
+                submitWord()
+                return
+            }
             setNewPosition(pressed.indexOf(button), type)
             currentWord = currentWord.substring(0, pressed.size)
         } else if (isNextTo(button)) {
@@ -148,7 +152,7 @@ class BoggleBoard
             val timerScope = CoroutineScope(Dispatchers.Unconfined)
             val timerJob = timerScope.launch {
                 isRunning = true
-                val size = gameBoardList.size + 2
+                val size = gameBoardList.size + 10
                 while (gameBoardList.size < size) {
                     val b = rollDice(die)
                     val words = tsolver.solve(b)

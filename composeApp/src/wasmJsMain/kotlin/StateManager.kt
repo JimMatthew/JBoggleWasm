@@ -23,7 +23,8 @@ class StateManager() {
         boardArray = { BoardArray(it) },
         updateStatus = { gameStatus(it) },
         isHighScoreMode = { isHighScoreMode(it) },
-        updateTime = { setTimeLeft(it) }
+        updateTime = { setTimeLeft(it) },
+        submitWord = { submitWord() }
     )
 
     private var timeLeft = mutableStateOf("0")
@@ -160,7 +161,6 @@ class StateManager() {
     }
 
     fun upd(d: String) {
-        //gameStatus(d)
         val words = d.trimIndent().split("\n")
         UpdateDict(words)
     }
@@ -183,8 +183,6 @@ class StateManager() {
 
 private fun loadDict(up: (String) -> Unit) {
 
-    val output = HashSet<String>()
-
     window.fetch(
         "/JoggleWasm/enable1.txt",
     )
@@ -195,12 +193,10 @@ private fun loadDict(up: (String) -> Unit) {
                     null
                 }
             } else {
-                output.add(it.statusText)
             }
             null
         }
         .catch {
-            output.add("error")
             null
         }
 }

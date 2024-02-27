@@ -32,10 +32,8 @@ fun BoardDisplay(
     var xoff by remember { mutableDoubleStateOf(0.0) }
     var yoff by remember { mutableDoubleStateOf(0.0) }
     var endDragIndex by remember { mutableIntStateOf(-1) }
-
     val screenWidth = 500
-    var boxsize = (screenWidth) / 4
-    //var swp = 400
+    val boxsize = (screenWidth) / 4
     val swp = with(LocalDensity.current) { screenWidth.dp.toPx() }
     Column {
         for (i in 0..3) {
@@ -73,6 +71,7 @@ fun BoardDisplay(
                                         onDragStart = {
                                             touchPoint = it
                                             endDragIndex = index
+                                            //save the position the pointer is inside the button
                                             xoff =
                                                 j + ((touchPoint.x) / (swp / 4)).toDouble()
                                             yoff =
@@ -83,20 +82,23 @@ fun BoardDisplay(
                                             val a = swp / 4
                                             xoff += dragAmount.x / a
                                             yoff += dragAmount.y / a
-                                            val x = endDragIndex % 4
+                                            val x = endDragIndex % 4    //button currently over
                                             val y = endDragIndex / 4
 
                                             if (yoff >= 0 && yoff < 4) {
-                                                if (xoff.toInt() != x && yoff.toInt() != y) {
-                                                    endDragIndex =
-                                                        xoff.toInt() + (yoff.toInt() * 4)
-                                                    pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
-                                                } else if (xoff.toInt() != x) {
-                                                    endDragIndex = xoff.toInt() + y * 4
-                                                    pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
-                                                } else if (yoff.toInt() != y) {
-                                                    endDragIndex = (yoff.toInt() * 4) + x
-                                                    pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                val tx = xoff % 1   //position inside button
+                                                val ty = yoff % 1
+                                                if ((tx > .15 && tx < .85) && (ty > .15 && ty < .85)){
+                                                    if (xoff.toInt() != x && yoff.toInt() != y) {
+                                                        endDragIndex = xoff.toInt() + (yoff.toInt() * 4)
+                                                        pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                    } else if (xoff.toInt() != x) {
+                                                        endDragIndex = xoff.toInt() + y * 4
+                                                        pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                    } else if (yoff.toInt() != y) {
+                                                        endDragIndex = (yoff.toInt() * 4) + x
+                                                        pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                    }
                                                 }
                                             }
                                         },

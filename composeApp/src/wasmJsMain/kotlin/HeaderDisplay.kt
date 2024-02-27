@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,7 +33,8 @@ fun Header(
             Text(
                 text = "Boggle",
                 modifier = Modifier.width((300).dp).padding(bottom = 80.dp),
-                fontSize = 40.sp
+                fontSize = 40.sp,
+                fontFamily = FontFamily.SansSerif
             )
         }
 

@@ -3,3 +3,7 @@ class WasmPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = WasmPlatform()
+
+fun btn(){
+
+}

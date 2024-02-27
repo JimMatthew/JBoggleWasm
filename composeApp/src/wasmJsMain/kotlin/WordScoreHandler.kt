@@ -63,6 +63,7 @@ class WordScoreHandler (
         score = 0
         updateScore(score)
         updateWordsFound(userWordsString())
+        updateNumWordsFound(userWordSet.size)
     }
 
     private fun computeScore(word: String): Int {
