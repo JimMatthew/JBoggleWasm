@@ -26,7 +26,7 @@ fun Controls(
     cancel: () -> Unit,
 ) {
     Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier.width(500.dp)
     ) {
         Button(

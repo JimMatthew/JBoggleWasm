@@ -38,96 +38,99 @@ fun BoardDisplay(
     val screenWidth = 500
     val boxsize = (screenWidth) / 4
     val swp = with(LocalDensity.current) { screenWidth.dp.toPx() }
-    Column {
-        for (i in 0..3) {
-            Row {
-                for (j in 0..3) {
-                    val index = (i * 4) + j
-                    Button(
-                        onClick = {
-                        },
-                        shape = RectangleShape,
-                        modifier = Modifier
-                            .size(boxsize.dp) // Adjust size as needed
-                            .padding(3.dp), // Adjust padding as needed
-                        colors = ButtonDefaults.buttonColors(Color.White),
-                        contentPadding = PaddingValues(0.dp),
-
-                        ) {
-                        Box(
+    val dieImage = painterResource("blank.png")
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center){
+        Column {
+            for (i in 0..3) {
+                Row {
+                    for (j in 0..3) {
+                        val index = (i * 4) + j
+                        Button(
+                            onClick = {
+                            },
+                            shape = RectangleShape,
                             modifier = Modifier
-                                .size(boxsize.dp)
-                                .fillMaxSize()
-                                .pointerInput(Unit) {
-                                    detectTapGestures(
-                                        onPress = {
-                                            try {
+                                .size(boxsize.dp) // Adjust size as needed
+                                .padding(3.dp), // Adjust padding as needed
+                            colors = ButtonDefaults.buttonColors(Color.White),
+                            contentPadding = PaddingValues(0.dp),
+                            ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(boxsize.dp)
+                                    .fillMaxSize()
+                                    .pointerInput(Unit) {
+                                        detectTapGestures(
+                                            onPress = {
+                                                try {
+                                                    touchPoint = it
+                                                    pressLetter(index, BoggleBoard.InputType.TAP)
+                                                } finally {
+                                                }
+                                            },
+                                        )
+                                    }
+                                    .pointerInput(Unit) {
+                                        detectDragGestures(
+                                            onDragStart = {
                                                 touchPoint = it
-                                                pressLetter(index, BoggleBoard.InputType.TAP)
-                                            } finally {
-                                            }
-                                        },
-                                    )
-                                }
-                                .pointerInput(Unit) {
-                                    detectDragGestures(
-                                        onDragStart = {
-                                            touchPoint = it
-                                            endDragIndex = index
-                                            //save the position the pointer is inside the button
-                                            xoff =
-                                                j + ((touchPoint.x) / (swp / 4)).toDouble()
-                                            yoff =
-                                                i + ((touchPoint.y) / (swp / 4)).toDouble()
-                                        },
-                                        onDrag = { change, dragAmount ->
-                                            change.consume()
-                                            val a = swp / 4
-                                            xoff += dragAmount.x / a
-                                            yoff += dragAmount.y / a
-                                            val x = endDragIndex % 4    //button currently over
-                                            val y = endDragIndex / 4
+                                                endDragIndex = index
+                                                //save the position the pointer is inside the button
+                                                xoff =
+                                                    j + ((touchPoint.x) / (swp / 4)).toDouble()
+                                                yoff =
+                                                    i + ((touchPoint.y) / (swp / 4)).toDouble()
+                                            },
+                                            onDrag = { change, dragAmount ->
+                                                change.consume()
+                                                val a = swp / 4
+                                                xoff += dragAmount.x / a
+                                                yoff += dragAmount.y / a
+                                                val x = endDragIndex % 4    //button currently over
+                                                val y = endDragIndex / 4
 
-                                            if (yoff >= 0 && yoff < 4) {
-                                                val tx = xoff % 1   //position inside button
-                                                val ty = yoff % 1
-                                                if ((tx > .15 && tx < .85) && (ty > .15 && ty < .85)){
-                                                    if (xoff.toInt() != x && yoff.toInt() != y) {
-                                                        endDragIndex = xoff.toInt() + (yoff.toInt() * 4)
-                                                        pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
-                                                    } else if (xoff.toInt() != x) {
-                                                        endDragIndex = xoff.toInt() + y * 4
-                                                        pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
-                                                    } else if (yoff.toInt() != y) {
-                                                        endDragIndex = (yoff.toInt() * 4) + x
-                                                        pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                if (yoff >= 0 && yoff < 4) {
+                                                    val tx = xoff % 1   //position inside button
+                                                    val ty = yoff % 1
+                                                    if ((tx > .15 && tx < .85) && (ty > .15 && ty < .85)){
+                                                        if (xoff.toInt() != x && yoff.toInt() != y) {
+                                                            endDragIndex = xoff.toInt() + (yoff.toInt() * 4)
+                                                            pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                        } else if (xoff.toInt() != x) {
+                                                            endDragIndex = xoff.toInt() + y * 4
+                                                            pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                        } else if (yoff.toInt() != y) {
+                                                            endDragIndex = (yoff.toInt() * 4) + x
+                                                            pressLetter(endDragIndex, BoggleBoard.InputType.DRAG)
+                                                        }
                                                     }
                                                 }
+                                            },
+                                            onDragEnd = {
                                             }
-                                        },
-                                        onDragEnd = {
-                                        }
-                                    )
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
+                                        )
+                                    },
+                                contentAlignment = Alignment.Center
+                            ) {
 
-                            Image(
-                                painter = painterResource("/blank.png"),
-                                contentDescription = null
-                            )
+                                Image(
+                                    painter = dieImage,
+                                    contentDescription = null
+                                )
 
-                            Text(
-                                text = board[index].uppercase(),
-                                color = if (pressed.contains(index)) Color(0xFFce6f1b) else Color.Black,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 36.sp
-                            )
+                                Text(
+                                    text = board[index].uppercase(),
+                                    color = if (pressed.contains(index)) Color(0xFFce6f1b) else Color.Black,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 36.sp
+                                )
 
+                            }
                         }
                     }
                 }
             }
         }
     }
+
 }

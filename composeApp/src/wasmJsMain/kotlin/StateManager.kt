@@ -1,7 +1,4 @@
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -55,57 +52,58 @@ class StateManager() {
     @Composable
     fun StateManager() {
 
-        if (!isDictLoaded.value) {
-            loadDict() {
-                upd(it)
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+            if (!isDictLoaded.value) {
+                loadDict() {
+                    upd(it)
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Absolute.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = " Loading... ",
+                        modifier = Modifier.padding(1.dp).width((500).dp),
+                        fontSize = 20.sp
+                    )
+                }
             }
-            Row(
-                horizontalArrangement = Arrangement.Absolute.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = " Loading... ",
-                    modifier = Modifier.padding(1.dp).width((500).dp),
-                    fontSize = 20.sp
+
+            Header(
+                timeleft = timeLeft.value,
+                currentWord = current.value,
+                newGame = { startNewGame() }
+            )
+
+            if (showBoardAfterGame.value || !gameover.value) {
+                BoardDisplay(
+                    board = board.value,
+                    pressed = pressed.value
+                ) { index, type ->
+                    boardMaker.letterPress(index, type)
+                }
+            }
+
+            if (!gameover.value) {
+                Controls(
+                    numWords = numWordsFound.intValue,
+                    score = score.intValue,
+                    wordsOnBoard = wordsOnBoard.value,
+                    status = status.value,
+                    isHS = isHighScore.value,
+                    submit = { submitWord() },
+                    toggleHS = { boardMaker.useHighScoreBoards() },
+                    cancel = { boardMaker.clearCurrentWord() }
+                )
+            } else {
+                GameOverDisplay(
+                    numWords = numWordsFound.intValue.toString(),
+                    score = score.intValue,
+                    foundWords = foundWords.value,
+                    wordsOnBoard = wordsOnBoard.value,
+                    showBoard = { showBoard() }
                 )
             }
-        }
-
-        Header(
-            timeleft = timeLeft.value,
-            currentWord = current.value,
-            newGame = { startNewGame() }
-        )
-
-        if (showBoardAfterGame.value || !gameover.value) {
-            BoardDisplay(
-                board = board.value,
-                pressed = pressed.value
-            ) { index, type ->
-                boardMaker.letterPress(index, type)
-            }
-        }
-
-        if (!gameover.value) {
-
-            Controls(
-                numWords = numWordsFound.intValue,
-                score = score.intValue,
-                wordsOnBoard = wordsOnBoard.value,
-                status = status.value,
-                isHS = isHighScore.value,
-                submit = { submitWord() },
-                toggleHS = { boardMaker.useHighScoreBoards() },
-                cancel = { boardMaker.clearCurrentWord() }
-            )
-        } else {
-            GameOverDisplay(
-                numWords = numWordsFound.intValue.toString(),
-                score = score.intValue,
-                foundWords = foundWords.value,
-                wordsOnBoard = wordsOnBoard.value,
-                showBoard = { showBoard() }
-            )
         }
     }
 
@@ -185,7 +183,6 @@ class StateManager() {
 
 
 private fun loadDict(up: (String) -> Unit) {
-
     window.fetch(
         "/enable1.txt",
     )
@@ -207,6 +204,3 @@ private fun loadDict(up: (String) -> Unit) {
 external interface dictlist {
     val dict: String?
 }
-
-
-
