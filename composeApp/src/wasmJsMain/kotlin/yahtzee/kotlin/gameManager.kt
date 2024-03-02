@@ -8,11 +8,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import yahtzee.kotlin.Rules
 import yahtzee.kotlin.diceView
-
 
 class DiceGameManager {
     private val diceRoller = DiceRoller()
@@ -20,7 +20,7 @@ class DiceGameManager {
     var bonus = mutableStateOf(" ")
     var chance = mutableStateOf("")
     var gamedice = mutableStateOf(diceRoller.getDice())
-    var roll = mutableStateOf(1)
+    var roll = mutableStateOf(0)
     var totalScore = mutableStateOf("")
     var isScored = mutableStateOf(false)
     var isOver = mutableStateOf(false)
@@ -31,10 +31,22 @@ class DiceGameManager {
 
     @Composable
     fun startGame() {
-
+        
         val colorpressed = ButtonDefaults.buttonColors(Color(0xFFce6f1b))
         val colornormal = ButtonDefaults.buttonColors(Color(0xFFFFFFFF))
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.Absolute.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Text(
+                    text = "Yahtzee",
+                    modifier = Modifier.width((300).dp).padding(bottom = 80.dp),
+                    fontSize = 40.sp,
+                    fontFamily = FontFamily.SansSerif
+                )
+            }
             Row {
 
                 numbersView(
@@ -117,9 +129,9 @@ class DiceGameManager {
     private fun newGame() {
         isScored.value = false
         diceRoller.newTurn()
-        diceRoller.roll()
+        //diceRoller.roll()
         gamedice.value = diceRoller.getDice()
-        roll.value = 1
+        roll.value = 0
         resetScore()
         totalScore.value = TotalScore.toString()
         displayCurrentScores(0)
@@ -161,10 +173,6 @@ class DiceGameManager {
         }
     }
 
-    private fun UpdateScoreType(type: ScoreTypes, num: Int) {
-        displayMap.value[type] = num
-    }
-
     private fun diePressed(die: Int) {
         if (pressed.value[die] == 0) {
             holdDie(die)
@@ -183,11 +191,7 @@ class DiceGameManager {
     }
 
     private fun hasScore(type: ScoreTypes): Boolean {
-        return if (scores.value[type] != null) {
-            true
-        } else {
-            false
-        }
+        return scores.value[type] != null
     }
 
     private val TotalScore: Int

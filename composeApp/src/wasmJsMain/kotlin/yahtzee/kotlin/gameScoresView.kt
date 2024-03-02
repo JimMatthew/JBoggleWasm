@@ -19,7 +19,7 @@ fun gameScores(
     hasScore: (ScoreTypes) -> Boolean
 ){
     val colornormal = ButtonDefaults.buttonColors(Color(0xFFFFFFFF))
-    val colorpressed = ButtonDefaults.buttonColors(Color(0xFFce6f1b))
+    val colorpressed = ButtonDefaults.buttonColors(Color(0xFFC7F464))
     Column {
         Row (verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp, 5.dp)){
             Text("3 of a Kind: ", modifier = Modifier.width(80.dp))

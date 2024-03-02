@@ -30,6 +30,7 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
             implementation(projects.shared)
+            implementation("com.ionspin.kotlin:bignum:0.3.9")
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
         }
     }

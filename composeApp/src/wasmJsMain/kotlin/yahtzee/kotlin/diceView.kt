@@ -17,7 +17,7 @@ fun diceView(
     gameDice: IntArray,
     diePressed: (Int) -> Unit
 ) {
-    val colorPressed = ButtonDefaults.buttonColors(Color(0xFFce6f1b))
+    val colorPressed = ButtonDefaults.buttonColors(Color(0xFFC7F464))
     val colorNormal = ButtonDefaults.buttonColors(Color(0xFFFFFFFF))
 
     Row {

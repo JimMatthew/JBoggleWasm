@@ -184,7 +184,7 @@ class StateManager() {
 
 private fun loadDict(up: (String) -> Unit) {
     window.fetch(
-        "/enable1.txt",
+        "/enable1.txt",///JoggleWasm
     )
         .then { it ->
             if (it.ok) {
